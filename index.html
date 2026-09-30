@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nascimento - Seu Acompanhamento de Saúde e Emagrecimento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 9999px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.6); }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
+
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr from-brand-600 to-teal-400 p-2.5 rounded-2xl shadow-lg shadow-brand-500/20 text-white flex items-center justify-center">
+                        <i class="fa-solid font-bold text-xl fa-heart-pulse"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-brand-600 to-teal-500 bg-clip-text text-transparent">Nascimento</span>
+                        <span class="text-xs block text-slate-400 font-medium -mt-1">Saúde & Bem-Estar</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-brand-500 text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-chart-line"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('mealplan')" id="tab-mealplan" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-utensils"></i> Plano Alimentar
+                    </button>
+                    <button onclick="switchTab('shopping')" id="tab-shopping" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-cart-shopping"></i> Lista de Compras
+                    </button>
+                    <button onclick="switchTab('tracker')" id="tab-tracker" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-glass-water"></i> Água e Hábitos
+                    </button>
+                </div>
+
+                <!-- Theme Toggle & Quick Actions -->
+                <div class="flex items-center space-x-2">
+                    <button id="theme-toggle" onclick="toggleDarkMode()" class="p-2.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition">
+                        <i class="fa-solid fa-moon text-lg" id="theme-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Bar (Bottom Bar) -->
+        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 z-50 px-2 py-1 flex justify-around items-center">
+            <button onclick="switchTab('dashboard')" id="mob-tab-dashboard" class="mob-nav-btn p-2 text-center text-brand-600 flex flex-col items-center">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Dashboard</span>
+            </button>
+            <button onclick="switchTab('mealplan')" id="mob-tab-mealplan" class="mob-nav-btn p-2 text-center text-slate-500 flex flex-col items-center">
+                <i class="fa-solid fa-utensils text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Cardápio</span>
+            </button>
+            <button onclick="switchTab('shopping')" id="mob-tab-shopping" class="mob-nav-btn p-2 text-center text-slate-500 flex flex-col items-center">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Compras</span>
+            </button>
+            <button onclick="switchTab('tracker')" id="mob-tab-tracker" class="mob-nav-btn p-2 text-center text-slate-500 flex flex-col items-center">
+                <i class="fa-solid fa-glass-water text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Hábitos</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-16 md:mb-8">
+        
+        <!-- Notification Banner -->
+        <div id="toast" class="hidden fixed top-20 right-4 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 flex items-center space-x-3">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-brand-500"></i>
+            <span id="toast-message" class="text-sm font-medium">Mensagem do sistema</span>
+        </div>
+
+        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <div id="sec-dashboard" class="tab-content space-y-6">
+            <!-- Summary Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Peso Atual</p>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="dash-current-weight">-- kg</h3>
+                        <p class="text-xs text-brand-600 font-medium mt-1" id="dash-weight-diff">Meta: -- kg</p>
+                    </div>
+                    <div class="p-3 bg-brand-50 dark:bg-brand-900/30 rounded-xl text-brand-600">
+                        <i class="fa-solid fa-weight-scale text-xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">IMC Atual</p>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="dash-bmi">--</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1" id="dash-bmi-status">Aguardando dados</p>
+                    </div>
+                    <div class="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-xl text-teal-600">
+                        <i class="fa-solid fa-calculator text-xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Consumo de Água</p>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="dash-water-today">0 / 2500 ml</h3>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden w-28">
+                            <div id="dash-water-bar" class="bg-blue-500 h-full w-0 transition-all"></div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-500">
+                        <i class="fa-solid fa-glass-water text-xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Hábitos Concluídos</p>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="dash-habits-count">0 / 0</h3>
+                        <p class="text-xs text-amber-500 font-medium mt-1" id="dash-habits-pct">0% hoje</p>
+                    </div>
+                    <div class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-500">
+                        <i class="fa-solid fa-circle-check text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section & Form Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Chart -->
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-brand-500"></i> Progresso Corporal
+                        </h3>
+                        <select id="chart-metric-select" onchange="updateChart()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs rounded-xl px-3 py-2 font-medium focus:ring-2 focus:ring-brand-500 outline-none">
+                            <option value="weight">Peso (kg)</option>
+                            <option value="waist">Cintura (cm)</option>
+                            <option value="abdomen">Abdômen (cm)</option>
+                            <option value="hip">Quadril (cm)</option>
+                            <option value="arm">Braço (cm)</option>
+                            <option value="thigh">Coxa (cm)</option>
+                        </select>
+                    </div>
+                    <div class="h-72 relative">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Add New Entry Form -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-brand-500"></i> Nova Medição
+                    </h3>
+                    <form id="measurement-form" onsubmit="saveMeasurement(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Data</label>
+                            <input type="date" id="m-date" required class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Peso (kg)</label>
+                                <input type="number" step="0.1" id="m-weight" placeholder="70.5" required class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Cintura (cm)</label>
+                                <input type="number" step="0.5" id="m-waist" placeholder="80" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Abdômen (cm)</label>
+                                <input type="number" step="0.5" id="m-abdomen" placeholder="88" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Quadril (cm)</label>
+                                <input type="number" step="0.5" id="m-hip" placeholder="95" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Braço (cm)</label>
+                                <input type="number" step="0.5" id="m-arm" placeholder="30" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Coxa (cm)</label>
+                                <input type="number" step="0.5" id="m-thigh" placeholder="55" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full mt-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow-md shadow-brand-500/20">
+                            Salvar Registro
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Profile & Goal Settings Block -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear text-brand-500"></i> Metas & Perfil
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Altura (cm)</label>
+                        <input type="number" id="user-height" placeholder="170" onchange="updateProfile()" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Meta de Peso (kg)</label>
+                        <input type="number" step="0.1" id="user-goal-weight" placeholder="65.0" onchange="updateProfile()" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Meta de Água Diária (ml)</label>
+                        <input type="number" id="user-water-goal" placeholder="2500" step="100" onchange="updateProfile()" class="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: MEAL PLAN ==================== -->
+        <div id="sec-mealplan" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Plano Alimentar Semanal</h2>
+                    <p class="text-sm text-slate-500">Organize suas refeições diárias e envie ingredientes para a lista de compras.</p>
+                </div>
+                <button onclick="addMealCategory()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-2 self-start sm:self-auto">
+                    <i class="fa-solid fa-plus"></i> Adicionar Refeição
+                </button>
+            </div>
+
+            <!-- Meal Plan Cards Container -->
+            <div id="meal-plan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Content via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: SHOPPING LIST ==================== -->
+        <div id="sec-shopping" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Lista de Compras</h2>
+                    <p class="text-sm text-slate-500">Gerencie seus suprimentos de forma inteligente por categoria.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="clearCheckedShoppingItems()" class="text-slate-500 hover:text-red-500 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold px-3 py-2 rounded-xl transition">
+                        Limpar Comprados
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm">
+                <div class="flex justify-between items-center text-xs font-semibold mb-2">
+                    <span class="text-slate-500">Progresso das Compras</span>
+                    <span id="shopping-progress-text" class="text-brand-600">0% (0/0)</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                    <div id="shopping-progress-bar" class="bg-brand-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Add Item Input -->
+            <form onsubmit="addShoppingItem(event)" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col sm:flex-row gap-3">
+                <input type="text" id="shop-input-title" placeholder="Nome do item (ex: Peito de Frango)" required class="flex-1 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                <select id="shop-input-cat" class="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                    <option value="Hortifruti">🍎 Hortifruti</option>
+                    <option value="Proteínas">🥩 Proteínas</option>
+                    <option value="Laticínios">🧀 Laticínios</option>
+                    <option value="Grãos & Cereais">🌾 Grãos & Cereais</option>
+                    <option value="Outros">🛒 Outros</option>
+                </select>
+                <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2 rounded-xl text-sm transition shadow-sm">
+                    Adicionar
+                </button>
+            </form>
+
+            <!-- Categorized Items List -->
+            <div id="shopping-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamic Content via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: HABITS & WATER ==================== -->
+        <div id="sec-tracker" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Water Tracker -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-glass-water text-blue-500"></i> Registro de Água
+                            </h3>
+                            <span class="text-xs text-slate-400 font-medium" id="water-date-display">Hoje</span>
+                        </div>
+                        <p class="text-sm text-slate-500">Mantenha-se hidratado para acelerar seus resultados.</p>
+                    </div>
+
+                    <div class="text-center py-6">
+                        <div class="relative inline-flex items-center justify-center">
+                            <svg class="w-40 h-40">
+                                <circle class="text-slate-100 dark:text-slate-700" stroke-width="10" stroke="currentColor" fill="transparent" r="65" cx="80" cy="80"/>
+                                <circle id="water-svg-circle" class="text-blue-500" stroke-width="10" stroke-dasharray="408" stroke-dashoffset="408" stroke-linecap="round" stroke="currentColor" fill="transparent" r="65" cx="80" cy="80"/>
+                            </svg>
+                            <div class="absolute flex flex-col items-center">
+                                <span class="text-3xl font-extrabold text-slate-800 dark:text-white" id="water-amount-text">0</span>
+                                <span class="text-xs text-slate-400 font-medium">/ <span id="water-goal-text">2500</span> ml</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Add Buttons -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="addWater(200)" class="bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 p-3 rounded-xl font-semibold text-xs flex flex-col items-center gap-1 transition">
+                            <i class="fa-solid fa-glass-water text-base"></i> +200 ml
+                        </button>
+                        <button onclick="addWater(350)" class="bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 p-3 rounded-xl font-semibold text-xs flex flex-col items-center gap-1 transition">
+                            <i class="fa-solid fa-bottle-water text-base"></i> +350 ml
+                        </button>
+                        <button onclick="addWater(500)" class="bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 p-3 rounded-xl font-semibold text-xs flex flex-col items-center gap-1 transition">
+                            <i class="fa-solid fa-bottle-droplet text-base"></i> +500 ml
+                        </button>
+                    </div>
+
+                    <button onclick="resetWater()" class="text-xs text-slate-400 hover:text-red-500 text-center transition">
+                        Zerar Registro de Hoje
+                    </button>
+                </div>
+
+                <!-- Habits Tracker -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-square-check text-brand-500"></i> Hábitos Diários
+                            </h3>
+                            <button onclick="addNewHabit()" class="text-xs text-brand-600 font-semibold hover:underline">
+                                + Novo Hábito
+                            </button>
+                        </div>
+                        <p class="text-sm text-slate-500">Marque as tarefas cumpridas hoje para manter a consistência.</p>
+                    </div>
+
+                    <!-- Habits List -->
+                    <div id="habits-list-container" class="space-y-3 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
+                        <!-- Dynamic Content via JS -->
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-400 text-center">
+                        Consistência é a chave do sucesso no processo de emagrecimento!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-8 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center space-x-2">
+                <div class="bg-brand-500 text-white p-1.5 rounded-lg text-xs">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <span class="font-bold text-slate-800 dark:text-slate-200">Nascimento</span>
+            </div>
+            
+            <!-- GitHub Pages Instructions Box -->
+            <div class="max-w-2xl mx-auto bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl text-xs text-slate-500 dark:text-slate-400 text-left border border-slate-200 dark:border-slate-700/50 space-y-2">
+                <p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-brands fa-github text-base"></i> Como hospedar gratuitamente no GitHub Pages:
+                </p>
+                <ol class="list-decimal list-inside space-y-1 ml-1 text-slate-600 dark:text-slate-400">
+                    <li>Crie um repositório público no GitHub com o nome <code class="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-800 dark:text-slate-200">nascimento-app</code>.</li>
+                    <li>Faça upload deste arquivo renomeado exatamente como <code class="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-800 dark:text-slate-200">index.html</code>.</li>
+                    <li>Acesse as <strong>Settings</strong> do repositório &gt; menu <strong>Pages</strong>.</li>
+                    <li>Em <strong>Source</strong>, selecione a branch <code class="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-800 dark:text-slate-200">main</code> (ou <code class="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-800 dark:text-slate-200">master</code>) e salve.</li>
+                    <li>Seu aplicativo estará online em poucos segundos no seu link exclusivo!</li>
+                </ol>
+            </div>
+
+            <p class="text-xs text-slate-400">&copy; 2026 Nascimento. Todos os direitos reservados. Dados armazenados localmente no seu navegador.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Default Core State
+        const DEFAULT_STATE = {
+            profile: {
+                height: 170,
+                goalWeight: 65,
+                waterGoal: 2500
+            },
+            measurements: [
+                { date: '2026-09-01', weight: 78.5, waist: 88, abdomen: 94, hip: 102, arm: 32, thigh: 60 },
+                { date: '2026-09-15', weight: 76.2, waist: 85, abdomen: 91, hip: 100, arm: 31.5, thigh: 59 },
+                { date: '2026-09-30', weight: 74.0, waist: 82, abdomen: 88, hip: 98, arm: 31, thigh: 58 }
+            ],
+            mealPlan: [
+                { id: '1', title: 'Café da Manhã', time: '07:30', items: ['2 Ovos mexidos', '1 Fatia de pão integral', 'Café preto sem açúcar', '1/2 Mamão Papaia'] },
+                { id: '2', title: 'Almoço', time: '12:30', items: ['150g Peito de Frango grelhado', '100g Arroz Integral', 'Concha de Feijão', 'Salada verde à vontade com azeite'] },
+                { id: '3', title: 'Lanche da Tarde', time: '16:00', items: ['1 Iogurte natural', '15g de Castanhas', '1 Colher de Chia'] },
+                { id: '4', title: 'Jantar', time: '19:30', items: ['150g Omelete com legumes', 'Salada de Tomate com Pepino'] }
+            ],
+            shoppingList: [
+                { id: '1', name: 'Ovos caipiras', category: 'Proteínas', checked: true },
+                { id: '2', name: 'Peito de Frango', category: 'Proteínas', checked: false },
+                { id: '3', name: 'Pão Integral', category: 'Grãos & Cereais', checked: false },
+                { id: '4', name: 'Folhas Verdes (Alface/Rúcula)', category: 'Hortifruti', checked: true },
+                { id: '5', name: 'Iogurte Natural', category: 'Laticínios', checked: false }
+            ],
+            waterLogs: {
+                // 'YYYY-MM-DD': total_ml
+            },
+            habits: [
+                { id: '1', title: 'Beber 2.5L de Água', completedDates: [] },
+                { id: '2', title: 'Caminhada de 30 min', completedDates: [] },
+                { id: '3', title: 'Dormir 7-8 horas', completedDates: [] },
+                { id: '4', title: 'Evitar açúcar refinado', completedDates: [] }
+            ]
+        };
+
+        let appData = {};
+        let chartInstance = null;
+
+        // Initialize App on Load
+        window.onload = function() {
+            loadData();
+            initDateFields();
+            renderDashboard();
+            renderMealPlan();
+            renderShoppingList();
+            renderHabitsAndWater();
+            initTheme();
+        };
+
+        // Data Storage Handlers
+        function loadData() {
+            const stored = localStorage.getItem('nascimento_app_data');
+            if (stored) {
+                try {
+                    appData = JSON.parse(stored);
+                } catch(e) {
+                    appData = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                }
+            } else {
+                appData = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('nascimento_app_data', JSON.stringify(appData));
+        }
+
+        function getTodayString() {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
+        }
+
+        function initDateFields() {
+            document.getElementById('m-date').value = getTodayString();
+        }
+
+        // Notification Toast
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+            toastIcon.className = isError ? "fa-solid fa-circle-xmark text-red-500" : "fa-solid fa-circle-check text-brand-500";
+            
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-2";
+            });
+            const activeNav = document.getElementById(`tab-${tabId}`);
+            if (activeNav) {
+                activeNav.className = "nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-brand-500 text-white shadow-md shadow-brand-500/20";
+            }
+
+            // Mobile Nav UI update
+            document.querySelectorAll('.mob-nav-btn').forEach(btn => btn.className = "mob-nav-btn p-2 text-center text-slate-500 flex flex-col items-center");
+            const activeMob = document.getElementById(`mob-tab-${tabId}`);
+            if (activeMob) {
+                activeMob.className = "mob-nav-btn p-2 text-center text-brand-600 flex flex-col items-center";
+            }
+
+            if (tabId === 'dashboard') {
+                updateChart();
+            }
+        }
+
+        // Dark Mode Logic
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-amber-400 text-lg";
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-lg";
+            }
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-lg";
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-amber-400 text-lg";
+            }
+            if (chartInstance) updateChart();
+        }
+
+        function renderDashboard() {
+            // Profile Inputs
+            document.getElementById('user-height').value = appData.profile.height || '';
+            document.getElementById('user-goal-weight').value = appData.profile.goalWeight || '';
+            document.getElementById('user-water-goal').value = appData.profile.waterGoal || 2500;
+
+            const measurements = appData.measurements;
+            if (measurements.length > 0) {
+                // Sort by date ascending
+                measurements.sort((a, b) => new Date(a.date) - new Date(b.date));
+                const latest = measurements[measurements.length - 1];
+
+                document.getElementById('dash-current-weight').innerText = `${latest.weight.toFixed(1)} kg`;
+
+                // BMI Calculation
+                if (appData.profile.height) {
+                    const heightM = appData.profile.height / 100;
+                    const bmi = (latest.weight / (heightM * heightM)).toFixed(1);
+                    document.getElementById('dash-bmi').innerText = bmi;
+
+                    let status = "";
+                    if (bmi < 18.5) status = "Abaixo do peso";
+                    else if (bmi < 24.9) status = "Peso normal";
+                    else if (bmi < 29.9) status = "Sobrepeso";
+                    else status = "Obesidade";
+                    document.getElementById('dash-bmi-status').innerText = status;
+                }
+
+                // Goal Diff
+                if (appData.profile.goalWeight) {
+                    const diff = (latest.weight - appData.profile.goalWeight).toFixed(1);
+                    if (diff > 0) {
+                        document.getElementById('dash-weight-diff').innerText = `Faltam ${diff} kg para a meta (${appData.profile.goalWeight}kg)`;
+                    } else if (diff == 0) {
+                        document.getElementById('dash-weight-diff').innerText = `Meta atingida! Parabéns!`;
+                    } else {
+                        document.getElementById('dash-weight-diff').innerText = `${Math.abs(diff)} kg abaixo da meta!`;
+                    }
+                }
+            }
+
+            // Water Tracker Summary
+            const today = getTodayString();
+            const waterToday = appData.waterLogs[today] || 0;
+            const waterGoal = appData.profile.waterGoal || 2500;
+            document.getElementById('dash-water-today').innerText = `${waterToday} / ${waterGoal} ml`;
+            const waterPct = Math.min(100, Math.round((waterToday / waterGoal) * 100));
+            document.getElementById('dash-water-bar').style.width = `${waterPct}%`;
+
+            // Habits Summary
+            const totalHabits = appData.habits.length;
+            const completedHabits = appData.habits.filter(h => h.completedDates.includes(today)).length;
+            document.getElementById('dash-habits-count').innerText = `${completedHabits} / ${totalHabits}`;
+            const habitPct = totalHabits > 0 ? Math.round((completedHabits / totalHabits) * 100) : 0;
+            document.getElementById('dash-habits-pct').innerText = `${habitPct}% concluído hoje`;
+
+            updateChart();
+        }
+
+        function updateProfile() {
+            appData.profile.height = parseFloat(document.getElementById('user-height').value) || 0;
+            appData.profile.goalWeight = parseFloat(document.getElementById('user-goal-weight').value) || 0;
+            appData.profile.waterGoal = parseInt(document.getElementById('user-water-goal').value) || 2500;
+            saveData();
+            renderDashboard();
+            renderHabitsAndWater();
+            showToast('Perfil e metas atualizados!');
+        }
+
+        function saveMeasurement(e) {
+            e.preventDefault();
+            const date = document.getElementById('m-date').value;
+            const weight = parseFloat(document.getElementById('m-weight').value);
+            const waist = parseFloat(document.getElementById('m-waist').value) || null;
+            const abdomen = parseFloat(document.getElementById('m-abdomen').value) || null;
+            const hip = parseFloat(document.getElementById('m-hip').value) || null;
+            const arm = parseFloat(document.getElementById('m-arm').value) || null;
+            const thigh = parseFloat(document.getElementById('m-thigh').value) || null;
+
+            if (!date || isNaN(weight)) {
+                showToast('Preencha a data e o peso corretamente.', true);
+                return;
+            }
+
+            // Check if entry exists for this date
+            const existingIdx = appData.measurements.findIndex(m => m.date === date);
+            const newObj = { date, weight, waist, abdomen, hip, arm, thigh };
+
+            if (existingIdx >= 0) {
+                appData.measurements[existingIdx] = newObj;
+            } else {
+                appData.measurements.push(newObj);
+            }
+
+            saveData();
+            renderDashboard();
+            showToast('Medição registrada com sucesso!');
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            const metric = document.getElementById('chart-metric-select').value;
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)';
+
+            // Sort dates
+            appData.measurements.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const labels = appData.measurements.map(m => {
+                const parts = m.date.split('-');
+                return `${parts[2]}/${parts[1]}`;
+            });
+
+            const dataPoints = appData.measurements.map(m => m[metric] || null);
+
+            const metricLabels = {
+                weight: 'Peso (kg)',
+                waist: 'Cintura (cm)',
+                abdomen: 'Abdômen (cm)',
+                hip: 'Quadril (cm)',
+                arm: 'Braço (cm)',
+                thigh: 'Coxa (cm)'
+            };
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: metricLabels[metric],
+                        data: dataPoints,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#059669',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
+                        },
+                        y: {
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderMealPlan() {
+            const container = document.getElementById('meal-plan-container');
+            container.innerHTML = '';
+
+            appData.mealPlan.forEach((meal) => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between space-y-4";
+                
+                let itemsHtml = meal.items.map((item, idx) => `
+                    <li class="text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between group">
+                        <span>• ${item}</span>
+                        <div class="opacity-0 group-hover:opacity-100 transition space-x-1">
+                            <button onclick="addSingleMealToShopping('${item.replace(/'/g, "\\'")}')" class="text-xs text-brand-600 hover:text-brand-700 p-1" title="Adicionar à Lista de Compras">
+                                <i class="fa-solid fa-cart-plus"></i>
+                            </button>
+                            <button onclick="removeMealItem('${meal.id}', ${idx})" class="text-xs text-slate-400 hover:text-red-500 p-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </li>
+                `).join('');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-slate-700/80 pb-2">
+                            <div>
+                                <h3 class="font-bold text-slate-800 dark:text-white">${meal.title}</h3>
+                                <span class="text-xs font-medium text-brand-600 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-md">${meal.time}</span>
+                            </div>
+                            <button onclick="deleteMealCategory('${meal.id}')" class="text-xs text-slate-400 hover:text-red-500 transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <ul class="space-y-2">
+                            ${itemsHtml}
+                        </ul>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-700/80 space-y-2">
+                        <form onsubmit="addMealItem(event, '${meal.id}')" class="flex gap-2">
+                            <input type="text" placeholder="Novo alimento..." required class="flex-1 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button type="submit" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+                                +
+                            </button>
+                        </form>
+                        <button onclick="addAllMealToShopping('${meal.id}')" class="w-full text-center text-xs font-semibold text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 py-2 rounded-xl transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-cart-shopping"></i> Adicionar Todos às Compras
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addMealCategory() {
+            const title = prompt("Nome da Refeição (ex: Ceia, Lanche da Manhã):");
+            if (!title) return;
+            const time = prompt("Horário sugerido (ex: 10:00):", "10:00") || "10:00";
+
+            const newMeal = {
+                id: Date.now().toString(),
+                title: title,
+                time: time,
+                items: []
+            };
+
+            appData.mealPlan.push(newMeal);
+            saveData();
+            renderMealPlan();
+            showToast('Refeição criada com sucesso!');
+        }
+
+        function deleteMealCategory(id) {
+            appData.mealPlan = appData.mealPlan.filter(m => m.id !== id);
+            saveData();
+            renderMealPlan();
+            showToast('Refeição removida.');
+        }
+
+        function addMealItem(e, mealId) {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const meal = appData.mealPlan.find(m => m.id === mealId);
+            if (meal) {
+                meal.items.push(val);
+                saveData();
+                renderMealPlan();
+            }
+            input.value = '';
+        }
+
+        function removeMealItem(mealId, itemIdx) {
+            const meal = appData.mealPlan.find(m => m.id === mealId);
+            if (meal) {
+                meal.items.splice(itemIdx, 1);
+                saveData();
+                renderMealPlan();
+            }
+        }
+
+        function addSingleMealToShopping(itemText) {
+            // Clean text (remove quantities if simple)
+            appData.shoppingList.push({
+                id: Date.now().toString(),
+                name: itemText,
+                category: 'Outros',
+                checked: false
+            });
+            saveData();
+            renderShoppingList();
+            showToast(`"${itemText}" adicionado à lista de compras!`);
+        }
+
+        function addAllMealToShopping(mealId) {
+            const meal = appData.mealPlan.find(m => m.id === mealId);
+            if (!meal || meal.items.length === 0) return;
+
+            meal.items.forEach(item => {
+                appData.shoppingList.push({
+                    id: Date.now().toString() + Math.random().toString().substr(2, 4),
+                    name: item,
+                    category: 'Outros',
+                    checked: false
+                });
+            });
+
+            saveData();
+            renderShoppingList();
+            showToast(`Itens de ${meal.title} adicionados à lista de compras!`);
+        }
+
+        function renderShoppingList() {
+            const container = document.getElementById('shopping-list-container');
+            container.innerHTML = '';
+
+            const categories = ['Hortifruti', 'Proteínas', 'Laticínios', 'Grãos & Cereais', 'Outros'];
+            
+            // Stats Calculations
+            const totalItems = appData.shoppingList.length;
+            const checkedItems = appData.shoppingList.filter(i => i.checked).length;
+            const pct = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+
+            document.getElementById('shopping-progress-text').innerText = `${pct}% (${checkedItems}/${totalItems})`;
+            document.getElementById('shopping-progress-bar').style.width = `${pct}%`;
+
+            categories.forEach(cat => {
+                const items = appData.shoppingList.filter(i => i.category === cat);
+                if (items.length === 0) return;
+
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm space-y-3";
+
+                let itemsHtml = items.map(item => `
+                    <div class="flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-700/40 rounded-xl transition">
+                        <label class="flex items-center gap-3 cursor-pointer flex-1">
+                            <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleShoppingItem('${item.id}')" class="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                            <span class="text-sm ${item.checked ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-200'} font-medium">${item.name}</span>
+                        </label>
+                        <button onclick="deleteShoppingItem('${item.id}')" class="text-slate-300 hover:text-red-500 p-1 text-xs transition">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <h3 class="font-bold text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-slate-700/80 pb-2">${cat}</h3>
+                    <div class="space-y-1">
+                        ${itemsHtml}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            if (totalItems === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-2"></i>
+                        <p class="text-sm">Sua lista de compras está vazia.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function addShoppingItem(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('shop-input-title');
+            const catSelect = document.getElementById('shop-input-cat');
+
+            const name = nameInput.value.trim();
+            const category = catSelect.value;
+
+            if (!name) return;
+
+            appData.shoppingList.push({
+                id: Date.now().toString(),
+                name: name,
+                category: category,
+                checked: false
+            });
+
+            saveData();
+            renderShoppingList();
+            nameInput.value = '';
+        }
+
+        function toggleShoppingItem(id) {
+            const item = appData.shoppingList.find(i => i.id === id);
+            if (item) {
+                item.checked = !item.checked;
+                saveData();
+                renderShoppingList();
+            }
+        }
+
+        function deleteShoppingItem(id) {
+            appData.shoppingList = appData.shoppingList.filter(i => i.id !== id);
+            saveData();
+            renderShoppingList();
+        }
+
+        function clearCheckedShoppingItems() {
+            appData.shoppingList = appData.shoppingList.filter(i => !i.checked);
+            saveData();
+            renderShoppingList();
+            showToast('Itens comprados removidos!');
+        }
+
+        function renderHabitsAndWater() {
+            const today = getTodayString();
+
+            // Water Render
+            const waterToday = appData.waterLogs[today] || 0;
+            const waterGoal = appData.profile.waterGoal || 2500;
+
+            document.getElementById('water-amount-text').innerText = waterToday;
+            document.getElementById('water-goal-text').innerText = waterGoal;
+
+            const circle = document.getElementById('water-svg-circle');
+            const circumference = 408; // 2 * pi * 65
+            const pct = Math.min(1, waterToday / waterGoal);
+            const offset = circumference - (pct * circumference);
+            circle.style.strokeDashoffset = offset;
+
+            // Habits Render
+            const habitsContainer = document.getElementById('habits-list-container');
+            habitsContainer.innerHTML = '';
+
+            appData.habits.forEach(habit => {
+                const isDone = habit.completedDates.includes(today);
+
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/40 rounded-xl transition border border-slate-100 dark:border-slate-700/50";
+                
+                item.innerHTML = `
+                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                        <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleHabit('${habit.id}')" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                        <span class="text-sm font-semibold ${isDone ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-200'}">${habit.title}</span>
+                    </label>
+                    <button onclick="deleteHabit('${habit.id}')" class="text-slate-300 hover:text-red-500 p-1 text-xs transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+
+                habitsContainer.appendChild(item);
+            });
+        }
+
+        function addWater(amount) {
+            const today = getTodayString();
+            const current = appData.waterLogs[today] || 0;
+            appData.waterLogs[today] = current + amount;
+
+            saveData();
+            renderHabitsAndWater();
+            renderDashboard();
+            showToast(`+${amount}ml de água adicionados!`);
+        }
+
+        function resetWater() {
+            const today = getTodayString();
+            appData.waterLogs[today] = 0;
+            saveData();
+            renderHabitsAndWater();
+            renderDashboard();
+            showToast('Consumo de água zerado.');
+        }
+
+        function toggleHabit(id) {
+            const today = getTodayString();
+            const habit = appData.habits.find(h => h.id === id);
+            if (habit) {
+                const idx = habit.completedDates.indexOf(today);
+                if (idx >= 0) {
+                    habit.completedDates.splice(idx, 1);
+                } else {
+                    habit.completedDates.push(today);
+                }
+                saveData();
+                renderHabitsAndWater();
+                renderDashboard();
+            }
+        }
+
+        function addNewHabit() {
+            const title = prompt("Digite o nome do novo hábito diário:");
+            if (!title) return;
+
+            appData.habits.push({
+                id: Date.now().toString(),
+                title: title,
+                completedDates: []
+            });
+
+            saveData();
+            renderHabitsAndWater();
+            renderDashboard();
+            showToast('Hábito criado com sucesso!');
+        }
+
+        function deleteHabit(id) {
+            appData.habits = appData.habits.filter(h => h.id !== id);
+            saveData();
+            renderHabitsAndWater();
+            renderDashboard();
+            showToast('Hábito removido.');
+        }
+    </script>
+</body>
+</html>
